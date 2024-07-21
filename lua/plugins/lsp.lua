@@ -89,6 +89,7 @@ return {
       'folke/lazydev.nvim',
     },
     lazy = false,
+    priority = 999,
   },
   {
     'kaarmu/typst.vim',
