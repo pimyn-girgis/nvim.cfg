@@ -2,9 +2,10 @@ return {
   {
     'neovim/nvim-lspconfig',
     dependencies = {
-      { 'williamboman/mason.nvim', config = true },
+      { 'williamboman/mason.nvim', config = true, lazy = false },
       {
         'williamboman/mason-lspconfig.nvim',
+        lazy = false,
         init = function()
           local servers = {
             lua_ls = {

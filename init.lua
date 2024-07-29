@@ -9,10 +9,10 @@ local auto = vim.api.nvim_create_autocmd
 -- Options
 opt.tabstop = 2
 opt.softtabstop = 2  -- Number of spaces that a <Tab> counts for
-opt.textwidth = 79
+opt.textwidth = 120
 opt.shiftwidth = 2   -- Size of an indent
 opt.expandtab = true -- Use spaces instead of tabs
-opt.colorcolumn = '80'
+opt.colorcolumn = '121'
 opt.spell = true
 opt.relativenumber = true     -- Show relative line numbers
 opt.autochdir = true

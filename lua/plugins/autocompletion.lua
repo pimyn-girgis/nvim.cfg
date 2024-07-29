@@ -82,4 +82,5 @@ return { -- Autocompletion
     })
   end,
   lazy = false,
+  priority = 1001
 }
