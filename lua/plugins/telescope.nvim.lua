@@ -19,7 +19,7 @@ return {
       pcall(require('telescope').load_extension, 'fzf')
     end,
     keys = {
-      { '<leader>?',        function() require('telescope.builtin').oldfiles() end, desc = "[?] Find recently opened files", },
+      { '<leader>o',        function() require('telescope.builtin').oldfiles() end, desc = "[?] Find recently opened files", },
       { '<leader><leader>', function() require('telescope.builtin').buffers() end,  desc = '[ ] Find existing buffers', },
       {
         '<leader>/',
@@ -50,5 +50,5 @@ return {
     cond = function()
       return vim.fn.executable 'make' == 1
     end,
-  }
+  },
 }

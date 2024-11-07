@@ -14,13 +14,13 @@ opt.shiftwidth = 2   -- Size of an indent
 opt.expandtab = true -- Use spaces instead of tabs
 opt.colorcolumn = '121'
 opt.spell = true
-opt.relativenumber = true     -- Show relative line numbers
-opt.autochdir = true
-opt.hlsearch = false          -- Set highlight on search
-opt.mouse = 'a'               -- Enable mouse mode
-opt.clipboard = 'unnamedplus' -- Sync clipboard between OS and Neovim.
-opt.breakindent = true        -- Enable break indent
-opt.undofile = true           -- Save undo history
+opt.relativenumber = true -- Show relative line numbers
+-- opt.autochdir = true   -- change directory to directory of open buffer
+opt.hlsearch = false      -- Set highlight on search
+opt.mouse = 'a'           -- Enable mouse mode
+-- opt.clipboard = 'unnamedplus' -- Sync clipboard between OS and Neovim.
+opt.breakindent = true    -- Enable break indent
+opt.undofile = true       -- Save undo history
 opt.wrap = false
 opt.wrapmargin = 2
 opt.ignorecase = true -- Case insensitive searching UNLESS \C or capital in search
@@ -34,6 +34,7 @@ opt.foldcolumn = '0'                 -- Where to fold
 opt.foldlevel = 99                   -- Using ufo provider need a large value
 opt.foldlevelstart = 99
 opt.foldenable = true
+opt.encoding = 'utf-8'
 -- Window Options
 wopt.signcolumn = 'yes' -- Keep signcolumn on by default
 wopt.numberwidth = 2
@@ -46,20 +47,7 @@ local rocks = vim.fn.expand("$HOME" .. "/.luarocks/share/lua/5.1/?")
 package.path = package.path .. ";" .. rocks .. "/init.lua;"
 package.path = package.path .. ";" .. rocks .. ".lua;"
 -- Plugin Manager
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system {
-    'git',
-    'clone',
-    '--filter=blob:none',
-    'https://github.com/folke/lazy.nvim.git',
-    '--branch=stable', -- latest stable release
-    lazypath,
-  }
-end
-opt.rtp:prepend(lazypath) -- Plugin Manager
-require('lazy').setup('plugins', {})
-
+require('config.lazy')
 -- Set Theme
 exec.colorscheme "catppuccin"
 
@@ -70,6 +58,13 @@ auto(
     callback = function()
       vim.lsp.buf.format()
     end,
+  }
+)
+auto(
+  { 'vimEnter' }, {
+    desc = "typst watch on typst files",
+    pattern = { "*.typ" },
+    command = "TypstWatch",
   }
 )
 
@@ -95,23 +90,14 @@ key({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true }) -- Leader
 key('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 key('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
-local servers = {
-  lua_ls = {
-    Lua = {
-      workspace = { checkThirdParty = false },
-      telemetry = { enable = false },
-    },
-  },
-}
-
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-capabilities.textDocument.foldingRange = {
+Capabilities = vim.lsp.protocol.make_client_capabilities()
+Capabilities = require('cmp_nvim_lsp').default_capabilities(Capabilities)
+Capabilities.textDocument.foldingRange = {
   dynamicRegistration = false,
   lineFoldingOnly = true
 }
 
-local on_attach = function(_, bufnr)
+On_attach = function(_, bufnr)
   local nmap = function(keys, func, desc)
     if desc then
       desc = 'LSP: ' .. desc
@@ -121,7 +107,6 @@ local on_attach = function(_, bufnr)
   end
 
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-  nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
   nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
   nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
@@ -146,34 +131,67 @@ local on_attach = function(_, bufnr)
   end, { desc = 'Format current buffer with LSP' })
 end
 
-require('mason').setup()
-require('mason-lspconfig').setup {
-  ensure_installed = vim.tbl_keys(servers),
-}
-require('mason-lspconfig').setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
-  end,
-  ['verible'] = function()
-    require('lspconfig').verible.setup {
-      cmd = { 'verible-verilog-ls', '--rules_config_search' },
-      capabilities = capabilities,
-      on_attach = on_attach,
-    }
-  end,
-  ['clangd'] = function()
-    require("lspconfig").clangd.setup {
-      cmd = {
-        "/usr/bin/clangd",
-        "--offset-encoding=utf-16",
+local lsp = require('lspconfig')
+local serverlist = {
+  clangd = {},
+  lua_ls = {
+    settings = { Lua = { diagnostics = { globals = { 'vim' } } }, },
+  },
+  basedpyright = {},
+  -- rust_analyzer = {}, -- using rustacean.nvim
+  nixd = {
+    settings = {
+      nixd = {
+        nixpkgs = {
+          expr = "import <nixpkgs> { }",
+        },
+        formatting = {
+          command = { "nixfmt" },
+        },
+        options = {
+          nixos = {
+            expr = '(builtins.getFlake ("git+file://" + toString ./.)).nixosConfigurations.k-on.options',
+          },
+          home_manager = {
+            expr = '(builtins.getFlake ("git+file://" + toString ./.)).homeConfigurations."ruixi@k-on".options',
+          },
+        },
       },
-      capabilities = capabilities,
-      on_attach = on_attach,
-    }
-  end,
+    },
+  },
+  jdtls = {},
+  typst_lsp = {},
+}
+
+for name, info in pairs(serverlist) do
+  lsp[name].setup {
+    capabilities = Capabilities,
+    on_attach = On_attach,
+    settings = info.settings,
+    cmd = info.cmd,
+  }
+end
+
+vim.g.rustaceanvim = {
+  server = {
+    on_attach = function(_, bufnr)
+      On_attach(_, bufnr)
+      local rmap = function(keys, func, desc)
+        if desc then
+          desc = 'LSP: ' .. desc
+        end
+        vim.keymap.set('n', keys, function()
+          vim.cmd.RustLsp(func)
+        end, { buffer = bufnr, desc = desc })
+      end
+      rmap('<leader>rd', { 'debug' }, '[R]ust [D]ebug')
+      rmap('<leader>re', { 'explainError', 'current' }, '[R]ust [E]rror')
+      rmap('<leader>rr', { 'run' }, '[R]ust [R]un')
+      rmap('<leader>ro', { 'openDocs' }, '[R]ust [O]pen Docs')
+      rmap('<leader>rj', { 'joinLines' }, '[R]ust [J]oin lines')
+      rmap('<leader>rh', { 'view', 'hir' }, '[R]ust [H]IR')
+      rmap('<leader>rm', { 'view', 'mir' }, '[R]ust [M]IR')
+    end,
+    capabilities = Capabilities,
+  },
 }

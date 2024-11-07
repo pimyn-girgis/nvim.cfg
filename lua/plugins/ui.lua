@@ -4,7 +4,6 @@ return { -- Theme
     dependencies = {
       -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
       "MunifTanjim/nui.nvim",
-      "rcarriga/nvim-notify",
     },
     opts = {
       lsp = {
@@ -18,27 +17,39 @@ return { -- Theme
           enabled = false,
         }
       },
+      presets = {
+        bottom_search = true,
+        long_message_to_split = true,
+        inc_rename = true,
+      },
+      notify = {
+        enabled = false
+      }
     }
 
   },
 
-  {
-    "rcarriga/nvim-notify",
-    keys = {
-      {
-        '<Esc>',
-        function() require('notify').dismiss() end,
-        silent = true,
-      }
-    },
-  },
+  -- {
+  --   "rcarriga/nvim-notify",
+  --   opts = {
+  --     stages = "fade_in_slide_out",
+  --     fps = 60
+  --   },
+  --   keys = {
+  --     {
+  --       '<Esc>',
+  --       function() require('notify').dismiss() end,
+  --       silent = true,
+  --     }
+  --   },
+  -- },
 
   {
     "catppuccin/nvim",
     name = "catppuccin",
     priority = 1000,
     opts = {
-      flavour = "macchiato",
+      flavour = "mocha",
       integrations = {
         notify = true,
       }
@@ -46,7 +57,21 @@ return { -- Theme
   },
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
-    config = true
+    event = "VeryLazy",
+    opts = {
+      spelling = {
+        enabled = true,
+      },
+    },
+    keys = {
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
+      },
+    },
   },
   {
     'nvim-lualine/lualine.nvim',
@@ -57,11 +82,37 @@ return { -- Theme
         component_separators = '|',
         section_separators = '',
       },
+      sections = {
+        lualine_x = {
+          -- {
+          --   require("noice").api.status.message.get_hl,
+          --   cond = require("noice").api.status.message.has,
+          -- },
+          {
+            require("noice").api.status.command.get,
+            cond = require("noice").api.status.command.has,
+            color = { fg = "#ff9e64" },
+          },
+          {
+            require("noice").api.status.mode.get,
+            cond = require("noice").api.status.mode.has,
+            color = { fg = "#ff9e64" },
+          },
+          {
+            require("noice").api.status.search.get,
+            cond = require("noice").api.status.search.has,
+            color = { fg = "#ff9e64" },
+          },
+          'encoding',
+          'fileformat',
+          'filetype'
+        },
+      },
     },
+  },
 
-    sections = {
-      lualine_a = { 'buffer', },
-      lualine_b = { 'progress', }
-    },
+  {
+    "smjonas/inc-rename.nvim",
+    config = true,
   }
 }

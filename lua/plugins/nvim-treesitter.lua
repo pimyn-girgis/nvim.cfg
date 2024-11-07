@@ -7,18 +7,10 @@ return { -- Highlight, edit, and navigate code
     pcall(require('nvim-treesitter.install').update { with_sync = true })
     require('nvim-treesitter.configs').setup {
       -- Add languages to be installed here that you want installed for treesitter
-      ensure_installed = {
-        'c',
-        'cpp',
-        'go',
-        'lua',
-        'python',
-        'rust',
-        'tsx',
-        'typescript',
-        'vimdoc',
-        'vim'
-      },
+      -- This is commented because I use nixOS, but you might want to uncomment it
+      -- ensure_installed = {
+      --   'lua',
+      -- },
       sync_install = true,
       ignore_install = {},   -- List of parsers to ignore installing
       modules = {},

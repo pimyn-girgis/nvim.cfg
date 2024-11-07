@@ -2,8 +2,6 @@ return {
   {
     'neovim/nvim-lspconfig',
     dependencies = {
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
       'folke/lazydev.nvim',
     },
     lazy = false,
@@ -25,6 +23,12 @@ return {
       },
       select_signature_key = "<C-s>",
       toggle_key = "<C-h>",
+    }
+  },
+  {
+    "aznhe21/actions-preview.nvim",
+    keys = {
+      { '<leader>ca', function() require("actions-preview").code_actions() end, desc = "[C]ode [A]ction"},
     }
   },
 }
