@@ -37,6 +37,7 @@ return {
       { '<leader>sg', function() require('telescope.builtin').live_grep() end,   desc = '[S]earch by [G]rep' },
       { '<leader>sd', function() require('telescope.builtin').diagnostics() end, desc = '[S]earch [D]iagnostics' },
     },
+    event = "VeryLazy",
   },
 
   -- Fuzzy Finder Algorithm which requires local dependencies to be built.
@@ -50,5 +51,6 @@ return {
     cond = function()
       return vim.fn.executable 'make' == 1
     end,
+    event = "VeryLazy",
   },
 }

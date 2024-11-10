@@ -5,10 +5,8 @@ return {
       -- change commentstring for C/CPP to only use `//`
       commentstring = '// %s',
     },
-    dependencies = {
-      {
-        'joosepalviste/nvim-ts-context-commentstring',
-      }
-    }
+    keys = {
+      { 'gcc' }, { 'gbc' }
+    },
   }
 }

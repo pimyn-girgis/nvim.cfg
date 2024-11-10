@@ -11,7 +11,14 @@ return {
         changedelete = { text = '~' },
       },
     },
+    event = "UIEnter"
   },
-  'tpope/vim-fugitive',
-  'tpope/vim-rhubarb',
+  {
+    'tpope/vim-fugitive',
+    event = "VeryLazy"
+  },
+  {
+    'tpope/vim-rhubarb',
+    event = "VeryLazy"
+  }
 }

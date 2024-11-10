@@ -3,6 +3,7 @@ return { -- Highlight, edit, and navigate code
   dependencies = {
     'nvim-treesitter/nvim-treesitter-textobjects',
   },
+  event = 'UIEnter',
   config = function()
     pcall(require('nvim-treesitter.install').update { with_sync = true })
     require('nvim-treesitter.configs').setup {

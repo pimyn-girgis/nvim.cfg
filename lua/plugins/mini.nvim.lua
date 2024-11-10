@@ -12,8 +12,13 @@ return { -- multiple independent Plugins
         desc = '[T]rim [T]railspace'
       }
     },
-    init = function()
-      require('mini.trailspace').setup()
-    end
+    config = true,
+    event = "UIEnter",
+  },
+  {
+    'echasnovski/mini.icons',
+    version = '*',
+    config = true,
+    event = "UIEnter",
   },
 }

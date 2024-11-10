@@ -4,7 +4,6 @@ return {
     dependencies = {
       'folke/lazydev.nvim',
     },
-    lazy = false,
   },
   {
     'kaarmu/typst.vim',
@@ -12,6 +11,7 @@ return {
   },
   { -- show variable types
     'jubnzv/virtual-types.nvim',
+    event = "UIEnter",
   },
 
   { -- show function signature
@@ -23,12 +23,13 @@ return {
       },
       select_signature_key = "<C-s>",
       toggle_key = "<C-h>",
-    }
+    },
+    event = "InsertEnter",
   },
   {
     "aznhe21/actions-preview.nvim",
     keys = {
-      { '<leader>ca', function() require("actions-preview").code_actions() end, desc = "[C]ode [A]ction"},
+      { '<leader>ca', function() require("actions-preview").code_actions() end, desc = "[C]ode [A]ction" },
     }
   },
 }

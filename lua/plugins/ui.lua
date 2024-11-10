@@ -22,27 +22,11 @@ return { -- Theme
         long_message_to_split = true,
         inc_rename = true,
       },
-      notify = {
-        enabled = false
-      }
-    }
-
+      -- notify = {
+      --   enabled = false
+      -- }
+    },
   },
-
-  -- {
-  --   "rcarriga/nvim-notify",
-  --   opts = {
-  --     stages = "fade_in_slide_out",
-  --     fps = 60
-  --   },
-  --   keys = {
-  --     {
-  --       '<Esc>',
-  --       function() require('notify').dismiss() end,
-  --       silent = true,
-  --     }
-  --   },
-  -- },
 
   {
     "catppuccin/nvim",
@@ -75,6 +59,7 @@ return { -- Theme
   },
   {
     'nvim-lualine/lualine.nvim',
+    event = "UIEnter",
     opts = {
       options = {
         icons_enabled = true,
@@ -110,9 +95,4 @@ return { -- Theme
       },
     },
   },
-
-  {
-    "smjonas/inc-rename.nvim",
-    config = true,
-  }
 }

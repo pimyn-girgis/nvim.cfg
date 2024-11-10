@@ -5,7 +5,8 @@ return { -- Folding
     'kevinhwang91/promise-async',
     'neovim/nvim-lspconfig'
   },
-  init = function()
+  event = 'VeryLazy',
+  config = function()
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities.textDocument.foldingRange = {
       dynamicRegistration = false,

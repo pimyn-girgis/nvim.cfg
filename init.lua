@@ -89,6 +89,7 @@ key({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true }) -- Leader
 -- Remap for dealing with word wrap
 key('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 key('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+key('n', '<C-k>', function() vim.api.nvim_open_win() end, { desc = "Open floating preview" })
 
 Capabilities = vim.lsp.protocol.make_client_capabilities()
 Capabilities = require('cmp_nvim_lsp').default_capabilities(Capabilities)
@@ -115,7 +116,7 @@ On_attach = function(_, bufnr)
   nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
   nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
   -- See `:help K` for why this keymap
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  nmap('K', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -131,7 +132,7 @@ On_attach = function(_, bufnr)
   end, { desc = 'Format current buffer with LSP' })
 end
 
-local lsp = require('lspconfig')
+
 local serverlist = {
   clangd = {},
   lua_ls = {
@@ -164,34 +165,10 @@ local serverlist = {
 }
 
 for name, info in pairs(serverlist) do
-  lsp[name].setup {
+   require'lspconfig'[name].setup {
     capabilities = Capabilities,
     on_attach = On_attach,
     settings = info.settings,
     cmd = info.cmd,
   }
 end
-
-vim.g.rustaceanvim = {
-  server = {
-    on_attach = function(_, bufnr)
-      On_attach(_, bufnr)
-      local rmap = function(keys, func, desc)
-        if desc then
-          desc = 'LSP: ' .. desc
-        end
-        vim.keymap.set('n', keys, function()
-          vim.cmd.RustLsp(func)
-        end, { buffer = bufnr, desc = desc })
-      end
-      rmap('<leader>rd', { 'debug' }, '[R]ust [D]ebug')
-      rmap('<leader>re', { 'explainError', 'current' }, '[R]ust [E]rror')
-      rmap('<leader>rr', { 'run' }, '[R]ust [R]un')
-      rmap('<leader>ro', { 'openDocs' }, '[R]ust [O]pen Docs')
-      rmap('<leader>rj', { 'joinLines' }, '[R]ust [J]oin lines')
-      rmap('<leader>rh', { 'view', 'hir' }, '[R]ust [H]IR')
-      rmap('<leader>rm', { 'view', 'mir' }, '[R]ust [M]IR')
-    end,
-    capabilities = Capabilities,
-  },
-}

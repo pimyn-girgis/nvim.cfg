@@ -11,6 +11,7 @@ return {
   { -- copilot-cmp
     "zbirenbaum/copilot-cmp",
     config = true,
+    event = "InsertEnter",
   },
 
 }
