@@ -132,7 +132,6 @@ On_attach = function(_, bufnr)
   end, { desc = 'Format current buffer with LSP' })
 end
 
-
 local serverlist = {
   clangd = {},
   lua_ls = {
