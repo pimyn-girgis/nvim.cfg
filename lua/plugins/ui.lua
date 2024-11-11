@@ -22,10 +22,13 @@ return { -- Theme
         long_message_to_split = true,
         inc_rename = true,
       },
-      -- notify = {
-      --   enabled = false
-      -- }
+      notify = {
+        enabled = false
+      }
     },
+  },
+  {
+    'rcarriga/nvim-notify'
   },
 
   {
